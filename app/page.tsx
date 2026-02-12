@@ -28,22 +28,22 @@ export default function Portfolio() {
   const [formStatus, setFormStatus] = useState('idle');
   const [isDarkMode, setIsDarkMode] = useState(true);
   
-  // FIX 1: Add type to useRef so scrollIntoView is valid
+  // TS FIX: Define the ref type as a Div Element
   const bentoSectionRef = useRef<HTMLDivElement>(null);
 
-  // FIX 2: Add specific types for the event and tabName
+  // TS FIX: Typed event and tabName
   const handleScrollToSection = (e: React.MouseEvent, tabName: string) => {
     e.preventDefault();
     setActiveTab(tabName);
     bentoSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
-  // FIX 3: Add FormEvent type and use currentTarget for safety
+  // TS FIX: Typed FormEvent and safe HTMLFormElement access
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormStatus('sending');
     
-    // Use currentTarget to ensure we get the form element, not a child
+    // Use currentTarget to get the form element safely
     const formData = new FormData(e.currentTarget);
     formData.append("access_key", "9d1f72c2-e162-4766-b923-635806df3a99"); 
 
@@ -55,7 +55,7 @@ export default function Portfolio() {
 
       if (response.ok) {
         setFormStatus('success');
-        // Cast currentTarget to HTMLFormElement to access .reset()
+        // Cast target to HTMLFormElement to access .reset()
         (e.currentTarget as HTMLFormElement).reset();
       } else {
         setFormStatus('error');
@@ -171,8 +171,11 @@ export default function Portfolio() {
       {/* MAIN BENTO GRID */}
       <main ref={bentoSectionRef} className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4 px-6 md:auto-rows-[200px] mb-24">
         
-        {/* ✅ BULLETPROOF IMAGE TAG */}
-        <motion.div whileHover={{ y: -5 }} className={`relative md:col-span-1 md:row-span-3 overflow-hidden rounded-[2.5rem] border transition-colors ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-black/5'}`}>
+        {/* ✅ MOBILE PHOTO FIX: Added h-96 for mobile height */}
+        <motion.div 
+          whileHover={{ y: -5 }} 
+          className={`relative h-96 md:h-auto md:col-span-1 md:row-span-3 overflow-hidden rounded-[2.5rem] border transition-colors ${isDarkMode ? 'bg-gray-900 border-white/5' : 'bg-white border-black/5'}`}
+        >
           <img 
             src="/images/profile.png" 
             alt="Kedarnath Tattapure Profile" 
