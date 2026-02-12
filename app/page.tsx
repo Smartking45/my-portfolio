@@ -16,12 +16,9 @@ import {
   Sparkles,
   Sun,
   Moon,
-  ChevronRight,
   Terminal,
   User,
   MapPin,
-  Calendar,
-  Hash,
   Send,
   ExternalLink
 } from 'lucide-react';
@@ -31,19 +28,23 @@ export default function Portfolio() {
   const [formStatus, setFormStatus] = useState('idle');
   const [isDarkMode, setIsDarkMode] = useState(true);
   
-  const bentoSectionRef = useRef(null);
+  // FIX 1: Add type to useRef so scrollIntoView is valid
+  const bentoSectionRef = useRef<HTMLDivElement>(null);
 
-  const handleScrollToSection = (e, tabName) => {
+  // FIX 2: Add specific types for the event and tabName
+  const handleScrollToSection = (e: React.MouseEvent, tabName: string) => {
     e.preventDefault();
     setActiveTab(tabName);
     bentoSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
-  const handleSubmit = async (e) => {
+  // FIX 3: Add FormEvent type and use currentTarget for safety
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormStatus('sending');
     
-    const formData = new FormData(e.target);
+    // Use currentTarget to ensure we get the form element, not a child
+    const formData = new FormData(e.currentTarget);
     formData.append("access_key", "9d1f72c2-e162-4766-b923-635806df3a99"); 
 
     try {
@@ -54,7 +55,8 @@ export default function Portfolio() {
 
       if (response.ok) {
         setFormStatus('success');
-        e.target.reset();
+        // Cast currentTarget to HTMLFormElement to access .reset()
+        (e.currentTarget as HTMLFormElement).reset();
       } else {
         setFormStatus('error');
       }
@@ -290,8 +292,8 @@ export default function Portfolio() {
         {/* SHIP READY */}
         <div className="md:col-span-1 md:row-span-1">
            <div className={`h-full border rounded-[2.5rem] flex flex-col items-center justify-center text-center p-6 ${isDarkMode ? 'bg-blue-500/5 border-blue-500/10' : 'bg-blue-50 border-blue-100'}`}>
-              <Globe className="text-blue-500 mb-2 animate-[spin_5s_linear_infinite]" size={24} />
-              <span className="text-[10px] font-mono text-blue-500 font-bold uppercase tracking-widest">Ship Ready</span>
+             <Globe className="text-blue-500 mb-2 animate-[spin_5s_linear_infinite]" size={24} />
+             <span className="text-[10px] font-mono text-blue-500 font-bold uppercase tracking-widest">Ship Ready</span>
            </div>
         </div>
       </main>
